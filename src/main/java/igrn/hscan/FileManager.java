@@ -3,7 +3,6 @@ package igrn.hscan;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,22 +29,22 @@ public class FileManager {
             System.out.println("Файл был успешно сохранен.");
         } catch (IOException e) {
             //TODO: логи и сообщение
+            System.out.println("Внимание: возникла ошибка при записи в файл!");
+            throw new RuntimeException(e);
         }
     }
 
-    // Открывает html-файл для использования парсером
-    public static Document openHtmlFile(File htmlFile) {
-        Document openedHtmlFile = null;
+    // Открывает html-файл для использования классом HtmlScanner
+    public static Document openFile(Path path) {
         try {
-            openedHtmlFile = Jsoup.parse(htmlFile, "UTF-8");
+            return Jsoup.parse(path.toFile(), "UTF-8");
         } catch (FileNotFoundException e) {
             //TODO: Добавить логи и стек-трейс
-            System.out.println("Указанный файл не найден! Программа будет завершена.");
-            System.exit(1);
+            System.out.println("Внимание: указанный файл не найден или является папкой!");
+            throw new RuntimeException(e);
         } catch (IOException e) {
-            System.out.println("Возникла ошибка при чтении файла! Программа будет завершена.");
-            System.exit(1);
+            System.out.println("Внимание: возникла ошибка при чтении файла!");
+            throw new RuntimeException(e);
         }
-        return openedHtmlFile;
     }
 }

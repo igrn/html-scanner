@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class Parser {
+public class HtmlScanner {
     // Возвращает строку со всем текстом, содержащимся внутри тегов тела указанной web-страницы
     public static String findText(Document html) {
         StringBuilder parsedHtml = new StringBuilder();
