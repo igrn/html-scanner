@@ -6,6 +6,10 @@ target/
 *.jar
 *.war
 
+# Log files
+*.log
+logs/
+
 # Intellij IDEA files
 *.iml
 .idea/
