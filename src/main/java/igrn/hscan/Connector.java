@@ -31,15 +31,17 @@ public class Connector {
         final String urlRegex = "((http|https)://)?((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+";
         try {
             if (!Pattern.matches(urlRegex, uriPath)) {
-                throw new URISyntaxException(uriPath, "Введенная строка не является валидным url-адресом");
+                throw new URISyntaxException(uriPath, "Данная строка не является валидным url-адресом");
             }
             URL url = new URL(uriPath);
             url.toURI();
             return true;
-        } catch (URISyntaxException | MalformedURLException e) {
+        } catch (URISyntaxException e) {
             logger.warn(e.getMessage());
-            return false;
+        } catch (MalformedURLException e) {
+            logger.warn("В данной строке отсутствует протокол передачи данных: " + uriPath);
         }
+        return false;
     }
 
     // Метод-обертка над стандартным конструктором объекта URL, чтобы не нужно было ловить MalformedURLException в основном классе
