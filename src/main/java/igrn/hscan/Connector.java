@@ -1,5 +1,8 @@
 package igrn.hscan;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +12,8 @@ import java.net.URL;
 import java.util.regex.Pattern;
 
 public class Connector {
+    private static final Logger logger = LogManager.getLogger();
+
     // Устанавливает соединение с удаленным url-ресурсом, возвращает байтовый поток InputStream
     public static InputStream connectToUrl(URL url) throws IOException {
         try {
@@ -16,8 +21,7 @@ public class Connector {
             conn.setRequestProperty("User-Agent", "Mozilla/5.0");
             return conn.getInputStream();
         } catch (IOException e) {
-            //TODO: запись в логи
-            System.out.println("Невозможно установить соединение с данным url-адресом: " + url.toString());
+            logger.warn("Невозможно установить соединение с данным url-адресом: " + url.toString());
             throw new RuntimeException(e);
         }
     }
@@ -33,13 +37,13 @@ public class Connector {
             url.toURI();
             return true;
         } catch (URISyntaxException | MalformedURLException e) {
-            //TODO: логирование + сообщение в консоль
+            logger.warn(e.getMessage());
             return false;
         }
     }
 
-    // Метод-обертка над стандартным конструктором объекта URL, чтобы не нужно было ловить MalformedURLException в основном классе.
-    // Исключение по большей части игнорируется, т.к. предполагается, что валидация будет осуществляться методом isValidUrl.
+    // Метод-обертка над стандартным конструктором объекта URL, чтобы не нужно было ловить MalformedURLException в основном классе
+    // Исключение по большей части игнорируется, т.к. предполагается, что валидация будет осуществляться методом isValidUrl
     public static URL getUrl(String uriPath) {
         try {
             if (isValidUrl(uriPath)) {

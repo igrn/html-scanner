@@ -1,5 +1,7 @@
 package igrn.hscan;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 
 import java.net.URL;
@@ -9,14 +11,18 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class MainConsole {
+    private static final Logger logger = LogManager.getLogger();
+
     // Точка входа в программу
     public static void main(String[] args) {
+        logger.debug("Программа запущена.");
         try (Scanner reader = new Scanner(System.in)) {
             URL url = getValidUrl(reader);
             Document htmlFile = getHtmlFile(url, reader);
             showResults(htmlFile);
+            logger.debug("Программа успешно завершена.");
         } catch (RuntimeException e) {
-            System.out.println("При выполнении программы возникла ошибка! Программа завершена.");
+            logger.error("При выполнении программы возникла ошибка! Программа завершена.");
         }
     }
 
@@ -33,10 +39,10 @@ public class MainConsole {
     // Сохраняет код html-страницы в html-файл ./target/index.html, возвращает открытый файл в виде объекта с DOM-like структурой
     private static Document getHtmlFile(URL url, Scanner reader) {
         Path path = Path.of("target/index.html").toAbsolutePath();
-        System.out.println("Страница будет сохранена в файле: " + path.toString());
+        logger.info("Страница будет сохранена в файле: " + path.toString());
 
         if (Files.exists(path)) {
-            System.out.println("Внимание: данный файл уже существует и будет перезаписан!");
+            logger.warn("Внимание: данный файл уже существует и будет перезаписан!");
             exitIfPressedN(reader);
         } else {
             FileManager.createEmptyFile(path);
@@ -66,7 +72,7 @@ public class MainConsole {
             line = reader.nextLine();
         } while (!line.equalsIgnoreCase("y") && !line.equalsIgnoreCase("n"));
         if (line.equalsIgnoreCase("n")) {
-            System.out.println("Программа была завершена по требованию пользователя.");
+            logger.warn("Программа была завершена по требованию пользователя.");
             System.exit(1);
         }
     }
